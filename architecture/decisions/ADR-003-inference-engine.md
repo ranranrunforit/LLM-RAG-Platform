@@ -98,14 +98,14 @@ llm = LLM(
 
 ## Consequences
 
-✅ **Performance**: 12,000 tok/sec throughput (exceeds requirement)
-✅ **Latency**: 650ms P95 (meets <800ms SLO)
-✅ **Cost**: 85% GPU utilization (good efficiency)
-✅ **Maturity**: Production-ready, used by major companies
-⚠️ **Vendor Lock**: Requires NVIDIA GPUs (acceptable trade-off)
+✅ **Performance**: 12,000 tok/sec throughput (exceeds requirement)   
+✅ **Latency**: 650ms P95 (meets <800ms SLO)   
+✅ **Cost**: 85% GPU utilization (good efficiency)   
+✅ **Maturity**: Production-ready, used by major companies   
+⚠️ **Vendor Lock**: Requires NVIDIA GPUs (acceptable trade-off)   
 
-**Mitigation**: Abstract behind interface, can swap engines if needed
+**Mitigation**: Abstract behind interface, can swap engines if needed   
 
 ---
 
-**Approved By**: Cloud Architect, ML Engineering Lead
+**Approved By**: Cloud Architect, ML Engineering Lead   
