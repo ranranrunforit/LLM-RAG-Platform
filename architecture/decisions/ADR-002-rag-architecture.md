@@ -1,8 +1,8 @@
 # ADR-002: RAG Architecture (2-Stage Retrieval)
 
-**Status**: Accepted
-**Date**: 2024-01-15
-**Impact**: High - Core capability for reducing hallucinations
+**Status**: Accepted  
+**Date**: 2024-01-15  
+**Impact**: High - Core capability for reducing hallucinations  
 
 ---
 
