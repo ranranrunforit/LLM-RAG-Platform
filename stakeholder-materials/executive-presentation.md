@@ -490,13 +490,13 @@ For technical stakeholders, see:
 
 ---
 
-**Presentation End**
+**Presentation End**  
 
-**For approval signature**:
+**For approval signature**:  
 
-☐ Approved
-☐ Approved with modifications
-☐ Declined
+☐ Approved  
+☐ Approved with modifications  
+☐ Declined  
 
-**Signed**: _________________
-**Date**: _________________
+**Signed**: _________________  
+**Date**: _________________  
