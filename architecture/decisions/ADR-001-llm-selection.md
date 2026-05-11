@@ -8,12 +8,12 @@
 
 ## Context
 
-Need to support 10,000 users with LLM capabilities while managing cost and data privacy.
+Need to support 10,000 users with LLM capabilities while managing cost and data privacy.    
 
-**Current State**: $500K/month on commercial APIs (GPT-4, Claude)
-**Target State**: $150K/month with acceptable quality
+**Current State**: $500K/month on commercial APIs (GPT-4, Claude)    
+**Target State**: $150K/month with acceptable quality    
 
-**Requirements**:
+**Requirements**:    
 - Data privacy for sensitive information
 - Cost reduction (70% target)
 - Sub-second latency (P95 <800ms)
