@@ -1,16 +1,16 @@
 # ADR-005: Cost Optimization Strategy
 
-**Status**: Accepted
-**Date**: 2024-01-15
-**Impact**: Critical - $4.2M/year savings target
+**Status**: Accepted    
+**Date**: 2026-01-15    
+**Impact**: Critical - $4.2M/year savings target    
 
 ---
 
 ## Context
 
-**Current Baseline**: $500K/month (100% commercial APIs)
-**Target**: $150K/month (70% reduction)
-**Constraint**: Maintain quality and performance
+**Current Baseline**: $500K/month (100% commercial APIs)    
+**Target**: $150K/month (70% reduction)    
+**Constraint**: Maintain quality and performance    
 
 ---
 
@@ -125,14 +125,14 @@ def route_by_cost(query):
 
 ## Consequences
 
-✅ **Savings**: $4.2M/year (70% reduction)
-✅ **Quality**: Maintained (89% accuracy with RAG)
-✅ **Performance**: 650ms P95 (within SLO)
-⚠️ **Complexity**: Managing 5 optimization strategies
-⚠️ **Monitoring**: Need detailed cost tracking per request
+✅ **Savings**: $4.2M/year (70% reduction)    
+✅ **Quality**: Maintained (89% accuracy with RAG)    
+✅ **Performance**: 650ms P95 (within SLO)    
+⚠️ **Complexity**: Managing 5 optimization strategies    
+⚠️ **Monitoring**: Need detailed cost tracking per request    
 
-**Validation**: Monthly FinOps review, cost per request tracking
+**Validation**: Monthly FinOps review, cost per request tracking    
 
 ---
 
-**Approved By**: CFO, CTO, VP Engineering
+**Approved By**: CFO, CTO, VP Engineering    
