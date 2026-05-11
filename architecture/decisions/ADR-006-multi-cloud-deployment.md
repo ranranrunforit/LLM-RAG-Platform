@@ -93,27 +93,27 @@ operationalised through Kubernetes + Helm.
 
 ## Consequences
 
-✅ The runnable code matches the architecture narrative.
+✅ The runnable code matches the architecture narrative.   
 ✅ Stakeholders can pick a cloud based on existing footprint without code
-   changes.
+   changes.   
 ✅ Dev/demo cost stays near zero on GCP; full enterprise mode is achievable
-   on AWS without writing EKS+vLLM glue.
+   on AWS without writing EKS+vLLM glue.   
 ✅ The same `/v1/chat` smoke test passes on both clouds — the platform is
-   genuinely portable.
+   genuinely portable.   
 
 ⚠️ Maintaining two Terraform stacks doubles the IaC surface area. Mitigated
    by sharing the Python code, Dockerfile-ish patterns, and Prometheus
-   alert rules across both.
+   alert rules across both.   
 ⚠️ SageMaker is AWS-proprietary. If the team later needs to leave AWS, the
    inference layer needs to be re-platformed (likely back to EKS+vLLM).
    Mitigated by keeping the `kubernetes/vllm/` manifests in the repo as an
-   escape hatch.
+   escape hatch.   
 ⚠️ The cost figures in ADR-001 / ADR-005 still quote $75K/mo + $25K/mo for
    the GPU fleet, which assumed on-demand EKS pricing. On AWS SageMaker
    the same Llama 3 70B endpoint is ~$23.5K/mo on-demand. The cost
    conclusion (≥70% reduction vs $500K/mo commercial API spend) holds on
    either path. See `reference-implementation/docs/COST-MODEL.md` for the
-   reconciled numbers.
+   reconciled numbers.   
 
 ---
 
@@ -132,4 +132,4 @@ operationalised through Kubernetes + Helm.
 
 | Date | Note |
 |---|---|
-| 2025-02-26 | Initial decision. AWS Terraform stack landed alongside this ADR. |
+| 2026-02-26 | Initial decision. AWS Terraform stack landed alongside this ADR. |
