@@ -8,14 +8,14 @@
 
 ## Context
 
-**Problem**: LLMs hallucinate (15% error rate without grounding)
+**Problem**: LLMs hallucinate (15% error rate without grounding)  
 
-**Business Impact**:
+**Business Impact**:  
 - Users don't trust LLM outputs
 - Cannot deploy to customer-facing applications
 - Legal liability concerns
 
-**Requirements**:
+**Requirements**:  
 - Reduce hallucination rate to <5%
 - Sub-200ms retrieval latency
 - 1M+ documents in knowledge base
@@ -77,10 +77,10 @@
 
 ## Consequences
 
-✅ **Hallucination Reduction**: 15% → 3% (80% reduction)
-✅ **Answer Accuracy**: 70% → 89%
-✅ **User Trust**: Can cite sources
-✅ **Latency**: 175ms (within 200ms budget)
+✅ **Hallucination Reduction**: 15% → 3% (80% reduction)  
+✅ **Answer Accuracy**: 70% → 89%  
+✅ **User Trust**: Can cite sources  
+✅ **Latency**: 175ms (within 200ms budget)  
 ⚠️ **Cost**: $3K/month for embedding API
 ⚠️ **Complexity**: 2-stage pipeline to maintain
 
