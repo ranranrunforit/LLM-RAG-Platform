@@ -455,32 +455,6 @@ kubectl logs -f -l app=vllm -n llm-inference
 
 ---
 
-## Useful Links
-
-- **Dashboards**:
-  - [Grafana](https://grafana.company.com/llm-platform)
-  - [Prometheus](https://prometheus.company.com)
-  - [AWS Console](https://console.aws.amazon.com)
-  - [Cost Explorer](https://console.aws.amazon.com/cost-management/)
-
-- **Documentation**:
-  - [Architecture Docs](../ARCHITECTURE.md)
-  - [Deployment Guide](./deployment-guide.md)
-  - [Troubleshooting Guide](./troubleshooting-guide.md)
-  - [Wiki](https://wiki.company.com/llm-platform)
-
-- **Communication**:
-  - Slack: #llm-platform, #llm-platform-alerts
-  - Email: llm-platform@company.com
-  - PagerDuty: LLM Platform
-
-- **Code Repositories**:
-  - [Main Repo](https://github.com/company/llm-platform)
-  - [Terraform](https://github.com/company/llm-platform-infra)
-  - [Monitoring](https://github.com/company/llm-platform-monitoring)
-
----
-
 **Last Updated**: 2026-01-15  
 **Next Review**: 2026-04-15  
 **Maintained By**: AI Infrastructure Team  
