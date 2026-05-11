@@ -1,7 +1,7 @@
 # ADR-003: Inference Engine Selection (vLLM)
 
 **Status**: Accepted   
-**Date**: 2024-01-15   
+**Date**: 2026-01-15   
 **Impact**: High - Performance and cost   
 
 ---
