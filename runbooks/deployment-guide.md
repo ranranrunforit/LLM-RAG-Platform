@@ -1,7 +1,7 @@
 # Deployment Guide: Enterprise LLM Platform with RAG
 
 **Version**: 1.0  
-**Last Updated**: 2025-01-15  
+**Last Updated**: 2026-01-15  
 **Estimated Time**: 4-6 hours   
 **Difficulty**: Advanced  
 
