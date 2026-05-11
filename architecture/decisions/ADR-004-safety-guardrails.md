@@ -1,7 +1,7 @@
 # ADR-004: Safety and Guardrails Framework
 
 **Status**: Accepted    
-**Date**: 2024-01-15    
+**Date**: 2026-01-15    
 **Impact**: Critical - Regulatory compliance, brand risk    
 
 ---
@@ -106,14 +106,14 @@ rails = Rails(
 
 ## Consequences
 
-✅ **Safety**: 99.5% toxic content blocked
-✅ **Privacy**: 99% PII detection accuracy
-✅ **Hallucination**: 15% → 3% rate
-✅ **Compliance**: Meets GDPR, SOC 2 requirements
-⚠️ **Latency**: +65ms overhead (acceptable, within budget)
-⚠️ **False Positives**: 2% of safe requests blocked (tuning needed)
+✅ **Safety**: 99.5% toxic content blocked    
+✅ **Privacy**: 99% PII detection accuracy    
+✅ **Hallucination**: 15% → 3% rate    
+✅ **Compliance**: Meets GDPR, SOC 2 requirements    
+⚠️ **Latency**: +65ms overhead (acceptable, within budget)    
+⚠️ **False Positives**: 2% of safe requests blocked (tuning needed)    
 
-**Validation**: Monthly red-team exercises, quarterly audits
+**Validation**: Monthly red-team exercises, quarterly audits    
 
 ---
 
