@@ -666,5 +666,5 @@ A: Rolling update: deploy new version alongside old, gradually shift traffic, re
 
 ---
 
-**Last Updated**: 2025-01-15
-**Maintained By**: AI Infrastructure Team
+**Last Updated**: 2026-01-15  
+**Maintained By**: AI Infrastructure Team  
