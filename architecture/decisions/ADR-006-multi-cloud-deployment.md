@@ -1,9 +1,9 @@
 # ADR-006: Multi-Cloud Deployment (GCP + AWS)
 
-**Status**: Accepted
-**Date**: 2025-02-26
-**Impact**: High — affects every infrastructure decision downstream
-**Supersedes**: implicit single-cloud assumption in ADR-001..ADR-005
+**Status**: Accepted   
+**Date**: 2025-02-26   
+**Impact**: High — affects every infrastructure decision downstream   
+**Supersedes**: implicit single-cloud assumption in ADR-001..ADR-005   
 
 ---
 
