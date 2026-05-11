@@ -1,8 +1,8 @@
 # Technical Deep Dive: Enterprise LLM Platform with RAG
 
-**Audience**: Engineers, Technical Leads, Architects
-**Level**: Advanced
-**Duration**: 60 minutes
+**Audience**: Engineers, Technical Leads, Architects  
+**Level**: Advanced  
+**Duration**: 60 minutes  
 
 > **Cloud realization note**: The diagrams and tech-stack table below are
 > cloud-neutral. The project ships with **two runnable reference
