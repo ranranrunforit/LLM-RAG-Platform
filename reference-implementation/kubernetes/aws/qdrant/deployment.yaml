@@ -1,0 +1,137 @@
+---
+# Qdrant Vector Database - EKS Deployment (AWS)
+# Project 303: Enterprise LLM Platform with RAG
+#
+# Apply with: kubectl apply -f kubernetes/aws/qdrant/deployment.yaml
+# Note: EKS Fargate does NOT support EBS-backed PVCs. If you use Fargate-only,
+#       deploy Qdrant on a managed node group (this manifest assumes that) or
+#       switch to the EC2-based Qdrant in terraform/aws/qdrant.tf.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: llm-inference
+  labels:
+    project: project-303-llm-rag
+
+---
+# StorageClass for gp3 EBS volumes (faster + cheaper than gp2 default).
+# Skip this resource if you've already configured a default StorageClass.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gp3-encrypted
+provisioner: ebs.csi.aws.com
+parameters:
+  type: gp3
+  encrypted: "true"
+volumeBindingMode: WaitForFirstConsumer
+reclaimPolicy: Delete
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qdrant-pvc
+  namespace: llm-inference
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: gp3-encrypted
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qdrant
+  namespace: llm-inference
+  labels:
+    app: qdrant
+    component: vector-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qdrant
+  template:
+    metadata:
+      labels:
+        app: qdrant
+        component: vector-db
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "6333"
+        prometheus.io/path: "/metrics"
+    spec:
+      containers:
+      - name: qdrant
+        image: qdrant/qdrant:v1.9.0
+        imagePullPolicy: IfNotPresent
+
+        ports:
+        - name: http
+          containerPort: 6333
+        - name: grpc
+          containerPort: 6334
+
+        env:
+        - name: QDRANT__SERVICE__HTTP_PORT
+          value: "6333"
+        - name: QDRANT__SERVICE__GRPC_PORT
+          value: "6334"
+        - name: QDRANT__LOG_LEVEL
+          value: "INFO"
+
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+
+        volumeMounts:
+        - name: qdrant-storage
+          mountPath: /qdrant/storage
+
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 6333
+          initialDelaySeconds: 15
+          periodSeconds: 30
+
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 6333
+          initialDelaySeconds: 10
+          periodSeconds: 10
+
+      volumes:
+      - name: qdrant-storage
+        persistentVolumeClaim:
+          claimName: qdrant-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qdrant-service
+  namespace: llm-inference
+  labels:
+    app: qdrant
+spec:
+  type: ClusterIP
+  selector:
+    app: qdrant
+  ports:
+  - name: http
+    port: 6333
+    targetPort: 6333
+  - name: grpc
+    port: 6334
+    targetPort: 6334

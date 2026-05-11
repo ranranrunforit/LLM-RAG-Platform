@@ -1,0 +1,68 @@
+# =============================================================================
+# Dockerfile for AWS deployment (ECS Fargate)
+# Mirrors the GCP Dockerfile but adds boto3 + a SageMaker bootstrap entrypoint.
+# Build:  docker build -f Dockerfile.aws -t rag-api:aws .
+# =============================================================================
+
+FROM python:3.11-slim AS builder
+
+WORKDIR /build
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install base + AWS requirements
+COPY requirements.txt requirements-aws.txt ./
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir --user -r requirements.txt -r requirements-aws.txt
+
+# ── Stage 2: Production image ────────────────────────────────────────────────
+FROM python:3.11-slim AS production
+
+RUN groupadd -r appuser && useradd -r -g appuser -d /app appuser
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libgomp1 \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY --from=builder /root/.local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /root/.local/bin /usr/local/bin
+
+COPY src/ ./src/
+COPY entrypoint_aws.py ./entrypoint_aws.py
+
+ENV HF_HOME=/app/.cache/huggingface
+ENV SENTENCE_TRANSFORMERS_HOME=/app/.cache/sentence_transformers
+ENV PYTHONPATH=/app
+
+# Pre-download embedding + reranker models so the container is offline-ready.
+# Same as GCP — these models live entirely on CPU.
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('BAAI/bge-small-en-v1.5')" && \
+    python -c "from sentence_transformers import CrossEncoder; CrossEncoder('BAAI/bge-reranker-base')"
+
+ENV PORT=8080
+ENV ENV=production
+
+# Mark this image as AWS — the entrypoint imports the SageMaker bootstrap
+# module which monkey-patches LLMGateway. The GCP source files are unchanged.
+ENV LLM_BACKEND=sagemaker
+ENV SAGEMAKER_AUTOINSTALL=1
+
+RUN chown -R appuser:appuser /app
+USER appuser
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=90s --retries=3 \
+    CMD curl -f http://localhost:${PORT}/health || exit 1
+
+EXPOSE 8080
+
+# Entrypoint imports the SageMaker bootstrap (installing the LLMGateway patch
+# process-wide) BEFORE handing off to uvicorn. That ensures pipeline.py's
+# `LLMGateway(...)` call in main.py's lifespan hook auto-attaches the
+# SageMakerProvider. The GCP source files are not modified.
+CMD ["python", "entrypoint_aws.py"]

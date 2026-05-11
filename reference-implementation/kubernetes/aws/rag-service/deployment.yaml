@@ -1,0 +1,250 @@
+---
+# RAG API Service - EKS Deployment (AWS)
+# Project 303: Enterprise LLM Platform with RAG
+#
+# This is the EKS-flavoured alternative to the recommended ECS Fargate path
+# (terraform/aws/ecs.tf). Use it if your org already runs an EKS cluster and
+# wants RAG on the same plane as other workloads.
+#
+# Prerequisites:
+#   1. EKS cluster with at least one Fargate profile or managed node group.
+#   2. AWS Load Balancer Controller installed (for the Ingress / ALB resource).
+#   3. IRSA service account `rag-api-sa` bound to an IAM role with:
+#         - sagemaker:InvokeEndpoint on the project's endpoint
+#         - s3:GetObject/PutObject on the documents bucket
+#         - secretsmanager:GetSecretValue on the relevant secrets
+#      See terraform/aws/iam.tf for the equivalent ECS task role policy.
+#
+# Apply:
+#   kubectl apply -f kubernetes/aws/rag-service/deployment.yaml
+
+# ── Namespace ──────────────────────────────────────────────────────────────────
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: llm-inference
+  labels:
+    project: project-303-llm-rag
+
+---
+# ── ConfigMap (non-secret config) ─────────────────────────────────────────────
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: rag-api-config
+  namespace: llm-inference
+data:
+  LLM_BACKEND: "sagemaker"
+  # Set after `terraform apply` — use output `sagemaker_endpoint_name`.
+  SAGEMAKER_ENDPOINT: "REPLACE_WITH_terraform_output_sagemaker_endpoint_name"
+  SAGEMAKER_REGION: "us-west-2"
+  AWS_REGION: "us-west-2"
+  EMBEDDING_MODEL: "BAAI/bge-small-en-v1.5"
+  QDRANT_HOST: "qdrant-service"
+  QDRANT_PORT: "6333"
+  COLLECTION_NAME: "enterprise_knowledge"
+  ENABLE_RERANKING: "true"
+  ENABLE_PII_DETECTION: "true"
+  RATE_LIMIT_RPM: "60"
+  PORT: "8080"
+  SAGEMAKER_AUTOINSTALL: "1"     # Triggers the SageMaker provider patch at import
+
+---
+# ── ServiceAccount (IRSA bound to AWS IAM role) ──────────────────────────────
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rag-api-sa
+  namespace: llm-inference
+  annotations:
+    # Replace ACCOUNT_ID with your AWS account ID. The IAM role must have the
+    # ECS-task-style policy from terraform/aws/iam.tf (SageMaker + S3 + Secrets).
+    eks.amazonaws.com/role-arn: arn:aws:iam::ACCOUNT_ID:role/project-303-rag-production-ecs-task
+
+---
+# ── Secret (created via External Secrets Operator or kubectl) ────────────────
+# Recommended: use External Secrets Operator pointed at AWS Secrets Manager.
+# Quick path:
+#   API_KEY=$(aws secretsmanager get-secret-value \
+#     --secret-id project-303-rag-production-service-api-key --query SecretString --output text)
+#   kubectl create secret generic rag-api-secrets \
+#     --from-literal=API_KEY="$API_KEY" -n llm-inference
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rag-api-secrets
+  namespace: llm-inference
+type: Opaque
+
+---
+# ── Deployment ────────────────────────────────────────────────────────────────
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rag-api
+  namespace: llm-inference
+  labels:
+    app: rag-api
+    component: api-server
+    version: "1.0.0"
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rag-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: rag-api
+        component: api-server
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+        prometheus.io/path: "/metrics"
+    spec:
+      serviceAccountName: rag-api-sa
+
+      containers:
+      - name: rag-api
+        # Replace ACCOUNT_ID + region. Built from python/Dockerfile.aws and pushed via:
+        #   aws ecr get-login-password ... | docker login ...
+        #   docker build -f Dockerfile.aws -t rag-api:aws .
+        #   docker tag rag-api:aws <ACCOUNT_ID>.dkr.ecr.us-west-2.amazonaws.com/project-303-rag-production-rag-api:latest
+        #   docker push <ACCOUNT_ID>.dkr.ecr.us-west-2.amazonaws.com/project-303-rag-production-rag-api:latest
+        image: ACCOUNT_ID.dkr.ecr.us-west-2.amazonaws.com/project-303-rag-production-rag-api:latest
+        imagePullPolicy: Always
+
+        ports:
+        - name: http
+          containerPort: 8080
+
+        envFrom:
+        - configMapRef:
+            name: rag-api-config
+
+        env:
+        - name: API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rag-api-secrets
+              key: API_KEY
+
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "2Gi"
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
+
+        startupProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          failureThreshold: 12
+
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          periodSeconds: 30
+          failureThreshold: 3
+
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+
+---
+# ── Service ───────────────────────────────────────────────────────────────────
+apiVersion: v1
+kind: Service
+metadata:
+  name: rag-api-service
+  namespace: llm-inference
+  labels:
+    app: rag-api
+spec:
+  type: ClusterIP
+  selector:
+    app: rag-api
+  ports:
+  - name: http
+    port: 80
+    targetPort: 8080
+    protocol: TCP
+
+---
+# ── HorizontalPodAutoscaler ───────────────────────────────────────────────────
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: rag-api-hpa
+  namespace: llm-inference
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: rag-api
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
+  - type: Resource
+    resource:
+      name: memory
+      target:
+        type: Utilization
+        averageUtilization: 80
+
+---
+# ── Ingress (AWS Load Balancer Controller → ALB) ─────────────────────────────
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: rag-api-ingress
+  namespace: llm-inference
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /health
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: rag-api-service
+            port:
+              number: 80
+
+---
+# ── PodDisruptionBudget ───────────────────────────────────────────────────────
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: rag-api-pdb
+  namespace: llm-inference
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: rag-api
