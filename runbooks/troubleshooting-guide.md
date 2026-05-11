@@ -609,5 +609,5 @@ kubectl exec -it <vllm-pod> -n llm-inference -- nvidia-smi dmon -s pucvmet -c 10
 
 ---
 
-**Last Updated**: 2025-01-15
-**Maintained By**: AI Infrastructure Team
+**Last Updated**: 2026-01-15  
+**Maintained By**: AI Infrastructure Team  
