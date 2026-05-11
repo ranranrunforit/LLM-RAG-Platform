@@ -104,15 +104,15 @@ else:
 
 ## Consequences
 
-✅ **Cost Savings**: $500K → $150K/month (70% reduction, $4.2M/year)
-✅ **Data Privacy**: Sensitive data never leaves infrastructure
-✅ **Performance**: 650ms P95 (meets <800ms SLO)
-✅ **Quality**: 89% accuracy with RAG (acceptable for enterprise)
-⚠️ **Complexity**: Managing both self-hosted and commercial
-⚠️ **Infrastructure**: $100K/month GPU costs
+✅ **Cost Savings**: $500K → $150K/month (70% reduction, $4.2M/year)    
+✅ **Data Privacy**: Sensitive data never leaves infrastructure    
+✅ **Performance**: 650ms P95 (meets <800ms SLO)    
+✅ **Quality**: 89% accuracy with RAG (acceptable for enterprise)    
+⚠️ **Complexity**: Managing both self-hosted and commercial    
+⚠️ **Infrastructure**: $100K/month GPU costs    
 
-**Validation**: 3-month pilot, measure cost, quality, latency
+**Validation**: 3-month pilot, measure cost, quality, latency    
 
 ---
 
-**Approved By**: CTO, VP Engineering, CISO
+**Approved By**: CTO, VP Engineering, CISO    
