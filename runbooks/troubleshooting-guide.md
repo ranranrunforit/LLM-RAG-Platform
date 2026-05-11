@@ -572,19 +572,6 @@ kubectl apply -f kubernetes/rag-pipeline/
 
 ---
 
-## Escalation
-
-**L1 (Operator)**: Use this runbook
-**L2 (Engineer)**: Modify configurations, scale resources
-**L3 (Architect)**: Infrastructure changes, code fixes
-
-**Contact**:
-- Slack: #llm-platform-oncall
-- PagerDuty: Escalate to "LLM Platform - Critical"
-- Email: llm-platform-oncall@company.com
-
----
-
 ## Useful Commands Reference
 
 ```bash
