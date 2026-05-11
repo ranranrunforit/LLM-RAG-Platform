@@ -1,8 +1,8 @@
 # ADR-001: LLM Selection Strategy (Hybrid: Self-Hosted + Commercial)
 
-**Status**: Accepted
-**Date**: 2024-01-15
-**Impact**: Critical - Foundational decision affecting cost, performance, privacy
+**Status**: Accepted    
+**Date**: 2026-01-15    
+**Impact**: Critical - Foundational decision affecting cost, performance, privacy    
 
 ---
 
