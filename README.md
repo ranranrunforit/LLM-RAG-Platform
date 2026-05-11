@@ -1,6 +1,7 @@
 # LLM Platform with RAG
 
-**Duration**: 90 hours | **Difficulty**: Very High | **Project ID**: project-303-llm-rag-platform
+**Duration**: 90 hours | **Difficulty**: Very High | **Project ID**: project-303-llm-rag-platform   
+**Stack:** vLLM, RAG, Qdrant Vector DB, Terraform, Kubernetes, Prometheus, Grafana, Docker, AWS EKS, GCP GKE
 
 ## Overview
 
