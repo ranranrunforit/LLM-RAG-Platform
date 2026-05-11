@@ -662,13 +662,13 @@ kubectl rollout restart deployment/vllm-llama-3-70b -n llm-inference
 
 ## Support
 
-- **Slack**: #llm-platform
-- **Email**: llm-platform-oncall@company.com
-- **PagerDuty**: LLM Platform - Critical
-- **Wiki**: https://wiki.company.com/llm-platform
+- **Slack**: #llm-platform  
+- **Email**: llm-platform-oncall@company.com  
+- **PagerDuty**: LLM Platform - Critical  
+- **Wiki**: https://wiki.company.com/llm-platform  
 
 ---
 
-**Deployment Completed**: ✅
-**Sign-off**: _________________
-**Date**: _________________
+**Deployment Completed**: ✅  
+**Sign-off**: _________________  
+**Date**: _________________  
