@@ -1,9 +1,9 @@
 # Enterprise LLM Platform with RAG
 ## Executive Presentation
 
-**Presented By**: AI Infrastructure Team
-**Date**: January 2026
-**Duration**: 30 minutes
+**Presented By**: AI Infrastructure Team  
+**Date**: January 2026  
+**Duration**: 30 minutes  
 
 ---
 
