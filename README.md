@@ -184,13 +184,7 @@ project-303-llm-rag-platform/
 - **Week 3–6**: Architecture design + GCP reference build
 - **Week 7–8**: AWS reference build + cost modelling
 - **Week 9–10**: Governance + runbooks + stakeholder materials
-- **Week 11**: Presentation and iteration
-
-## Support and Resources
-
-- **Office Hours**: Weekly virtual office hours.
-- **Peer Review**: Optional async PR review.
-- **Discussion Forum**: GitHub Discussions.
+- **Week 11**: Presentation and iteration   
 
 ## Next Steps
 
