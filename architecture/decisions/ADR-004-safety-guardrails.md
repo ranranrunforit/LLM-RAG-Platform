@@ -1,8 +1,8 @@
 # ADR-004: Safety and Guardrails Framework
 
-**Status**: Accepted
-**Date**: 2024-01-15
-**Impact**: Critical - Regulatory compliance, brand risk
+**Status**: Accepted    
+**Date**: 2024-01-15    
+**Impact**: Critical - Regulatory compliance, brand risk    
 
 ---
 
